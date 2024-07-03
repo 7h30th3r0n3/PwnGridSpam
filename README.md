@@ -69,7 +69,7 @@ Bring this project to your next hacking event and demonstrate the power and flex
 
 Perfect for engaging with fellow hackers and showcasing innovative uses of Wi-Fi technology.
 
-MIT License
+## MIT License
 
 Copyright (c) [2024] 7h30th3r0n3
 
