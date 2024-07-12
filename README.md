@@ -44,13 +44,18 @@ Once the code is uploaded to your ESP-32 it's start spamming automatically and y
     ```sh
     stopdospwnd
     ```
-
+- **Start/Stop Flood peer beacon :**
+    ```sh
+    randomid
+    ```
+    
 ### Serial Command Guide
 - `start`: Begin regular beacon transmission.
 - `stop`: Halt all beacon transmissions.
-- `dospwnd`: Initiate DoSPWND mode beacon transmission.
+- `dospwnd`: Initiate DoSPWND mode beacon transmission .Can be used with randomid.
 - `stopdospwnd`: Cease PWND mode and resume regular beacon transmission.
-
+- `randomid`: Initiate Flood peer mode. Can be used with dospwnd.
+  
 ## Features
 - **Beacon Spam:** Transmit custom faces and names to pwnagotchi devices.
 - **DoSPWND Mode:** Special mode to block pwnagotchi screens.
@@ -58,7 +63,7 @@ Once the code is uploaded to your ESP-32 it's start spamming automatically and y
 - **Event Ready:** Ideal for live demonstrations at hacking events.
 
 ## License
-This project is licensed under the MIT License. See the `LICENSE` file for details.
+This project is licensed under the MIT License. See the `LICENSE` part for details.
 
 ## Credits
 Special thanks to the open-source community and all contributors.
