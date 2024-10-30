@@ -85,6 +85,10 @@ Bring this project to your next hacking event and demonstrate the power and flex
 
 Perfect for engaging with fellow hackers and showcasing innovative uses of Wi-Fi technology.
 
+
+
+part of the code of palnagotchi was used in this code : https://github.com/viniciusbo/m5-palnagotchi 
+
 ## MIT License
 
 Copyright (c) [2024] 7h30th3r0n3
