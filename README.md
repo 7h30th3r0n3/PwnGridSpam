@@ -79,15 +79,13 @@ This project is licensed under the MIT License. See the `LICENSE` part for detai
 ## Credits
 Special thanks to the open-source community and all contributors.
 
+part of the code of palnagotchi was used in this code special thanks to him : https://github.com/viniciusbo/m5-palnagotchi 
+
 ---
 
 Bring this project to your next hacking event and demonstrate the power and flexibility of the ESP-32 in a fun and interactive way.
 
 Perfect for engaging with fellow hackers and showcasing innovative uses of Wi-Fi technology.
-
-
-
-part of the code of palnagotchi was used in this code : https://github.com/viniciusbo/m5-palnagotchi 
 
 ## MIT License
 
